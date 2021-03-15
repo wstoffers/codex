@@ -3,6 +3,7 @@
 #imports:
 import os, collections
 import pandas as pd
+import joblib
 from sklearn.model_selection import train_test_split as Split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB as NaiveBayes
@@ -52,6 +53,9 @@ class classifier(object):
         self._logForTroubleshooting('final training', finalTraining, log)
         zipped = self._extractSpecsAndTargets(finalTraining)
         self._trainBaseline(*zipped, log)
+        joblib.dump((self.model,
+                     self.extractor), os.path.join(os.path.dirname(self.path),
+                                             'trained.joblib'))
         self._logForTroubleshooting('hold-out test', self.holdOutObjects, log)
         zipped = self._extractSpecsAndTargets(self.holdOutObjects)
         holdOutScore = self._predictProbabilities(*zipped, log)
