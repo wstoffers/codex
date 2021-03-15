@@ -1,1 +1,1 @@
-# Reducing R.I.S.C.
+# Reducing RISC
