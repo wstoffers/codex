@@ -29,3 +29,4 @@ if __name__ == '__main__':
                         help='path to raw data json')
     args = parser.parse_args()
     codex = corpus(args.file)
+    print(codex.pages)
