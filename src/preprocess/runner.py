@@ -7,12 +7,19 @@ import json
 #define:
 class corpus(object):
     def __init__(self, filePath):
-        self.json = self.readJson(filePath)
+        self.json = self._readJson(filePath)
+        self.pages = self._extractPages()
 
-    def readJson(self, filePath):
+    def _readJson(self, filePath):
         with open(filePath) as jsonFile:
             decoded = json.load(jsonFile)
         return decoded
+
+    def _extractPages(self):
+        pages = []
+        for key in self.json:
+            pages.append(self.json[key]['page'])
+        return pages
 
 #run:
 if __name__ == '__main__':
