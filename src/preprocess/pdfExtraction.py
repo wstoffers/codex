@@ -19,9 +19,7 @@ class unscrambler(object):
     def overcomeColumnsObstacle(self, page):
         self.words, lines = self.extract(page)
         lines = self.reuniteOrphans(lines)
-        with open(os.path.join(os.path.dirname(self.filePath),
-                               'test.ing'),'w') as log:
-            self.unscramble(lines, log)
+        self.unscramble(lines)
         return self.setInStone
 
     def reuniteOrphans(self, lines):
@@ -42,48 +40,41 @@ class unscrambler(object):
             finalLines.append(' '.join(reunited))
         return finalLines
     
-    def unscramble(self, lines, log):
-        log.write(f'unscramble called{os.linesep}')
+    def unscramble(self, lines):
         processAgain = []
         for line in lines:
             keep = []
             linePieces = line.split()
             batchSize = len(linePieces)
-            log.write(f'    cursor: {self.cursor}{os.linesep}')
             batch = self.words[self.cursor:self.cursor+batchSize]
-            log.write(f'    linePieces: {linePieces}{os.linesep}')
-            log.write(f'    batch: {batch}{os.linesep}')
             for i, piece in enumerate(linePieces):
                 if piece == batch[i]:
                     keep.append(piece)
                     continue
                 else:
-                    self.addToFinal(keep,log)
+                    self.addToFinal(keep)
                     stillNeeded = ' '.join(linePieces[i:])
-                    log.write(f'stillNeeded: {stillNeeded}{os.linesep}')
                     processAgain.append(stillNeeded)
                     break
             if self.setInStone:
                 if keep != self.setInStone[-1]:
-                    self.addToFinal(keep,log)
+                    self.addToFinal(keep)
             else:
-                self.addToFinal(keep,log)
+                self.addToFinal(keep)
             if batch == linePieces[::-1]:
                 #assume this is just page number extraction bug (don't care):
                 processAgain = []
-        log.write(f'{len(processAgain)}: {os.linesep}')
         if processAgain:
             if processAgain == self.repetition:
                 warnings.warn(f'This clause should only be reached by Pytest '
                               f'but {processAgain} was repeated')
             else:
                 self.repetition = processAgain
-                self.unscramble(processAgain, log)
+                self.unscramble(processAgain)
 
-    def addToFinal(self, keep, log):
+    def addToFinal(self, keep):
         self.setInStone.append(keep)
         self.cursor += len(keep)
-        log.write(f'    kept: {keep}{os.linesep}')
         
     def extract(self, pageNumber):
         with pdfplumber.open(self.filePath) as pdf:
