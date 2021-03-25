@@ -3,24 +3,69 @@
 #imports:
 import os
 import json
+import re
 
 #define:
 class corpus(object):
     def __init__(self, filePath):
-        self.json = self._readJson(filePath)
-        self.pages = self._extractPages()
+        self.pages, self.pageOrder = self._extractPages(filePath)
+        self.documents = self._initializeDocuments()
+        self.documentOps = []
 
     def _readJson(self, filePath):
         with open(filePath) as jsonFile:
             decoded = json.load(jsonFile)
         return decoded
 
-    def _extractPages(self):
-        pages = []
-        for key in self.json:
-            pages.append(self.json[key]['page'])
-        return pages
+    def _extractPages(self, filePath):
+        json = self._readJson(filePath)
+        pages, pageOrder = {}, []
+        for key in json:
+            page = json[key]['page']
+            pageOrder.append(page)
+            #lists must be kept in original form for later:
+            try:
+                pages[page] = json[key]['text']
+            except KeyError:
+                #page is just a photo
+                pages[page] = []
+        return pages, pageOrder
 
+    def _initializeDocuments(self):
+        documents = []
+        parent = None
+        for page in self.pageOrder:
+            newSection = self._checkSection(page)
+            if newSection:
+                parent = newSection
+            combined = ' '.join(self.pages[page])
+            #.*? makes .* not greedy:
+            for match in re.finditer('<.*?>',combined):
+                documents.append(document(page,parent,match.group()[1:-1]))
+        return documents
+
+    def _checkSection(self,page):
+        if page == '1':
+            return 'Old-Fashioned'
+        elif page == '59':
+            return 'Martini'
+        elif page == '101':
+            return 'Daiquiri'
+        elif page == '149':
+            return 'Sidecar'
+        elif page == '197':
+            return 'Whisky Highball'
+        elif page == '239':
+            return 'Flip'
+        elif page == '278':
+            return 'Appendix'
+    
+class document(object):
+    def __init__(self,page,parent,raw):
+        self.page = page
+        self.parent = parent
+        self.raw = raw
+    
 #run:
 if __name__ == '__main__':
     import argparse
@@ -29,4 +74,8 @@ if __name__ == '__main__':
                         help='path to raw data json')
     args = parser.parse_args()
     codex = corpus(args.file)
-    print(codex.pages)
+    toMatch = "\^(.*?)~"
+    with open(os.path.join(os.path.dirname(args.file),'runner.log'),'w') as log:
+        for doc in codex.documents:
+            log.write(f'page {doc.page} ({doc.parent}): '
+                      f'{re.search(toMatch,doc.raw).group(1)}{os.linesep}')
