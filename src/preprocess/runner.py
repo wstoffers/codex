@@ -47,6 +47,8 @@ class corpus(object):
     def _checkSection(self,page):
         if page == '1':
             return 'Old-Fashioned'
+        elif page == '42':
+            return 'NA'
         elif page == '59':
             return 'Martini'
         elif page == '101':
@@ -56,6 +58,10 @@ class corpus(object):
         elif page == '197':
             return 'Whisky Highball'
         elif page == '239':
+            return 'Flip'
+        elif page == '255':
+            return 'NA'
+        elif page == '256':
             return 'Flip'
         elif page == '278':
             return 'Appendix'
@@ -75,7 +81,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
     codex = corpus(args.file)
     toMatch = "\^(.*?)~"
+    titles = {}
     with open(os.path.join(os.path.dirname(args.file),'runner.log'),'w') as log:
         for doc in codex.documents:
+            title = re.search(toMatch,doc.raw).group(1)
+            try:
+                titles[doc.parent].append(title)
+            except KeyError:
+                titles[doc.parent] = [title]
             log.write(f'page {doc.page} ({doc.parent}): '
-                      f'{re.search(toMatch,doc.raw).group(1)}{os.linesep}')
+                      f'{title}{os.linesep}')
