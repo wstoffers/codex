@@ -91,3 +91,5 @@ if __name__ == '__main__':
                 titles[doc.parent] = [title]
             log.write(f'page {doc.page} ({doc.parent}): '
                       f'{title}{os.linesep}')
+    for key in titles:
+        print(f'{key}: {len(titles[key])}')
