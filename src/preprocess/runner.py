@@ -91,5 +91,13 @@ if __name__ == '__main__':
                 titles[doc.parent] = [title]
             log.write(f'page {doc.page} ({doc.parent}): '
                       f'{title}{os.linesep}')
+    etoh, other = [], []
     for key in titles:
-        print(f'{key}: {len(titles[key])}')
+        quantity = len(titles[key])
+        print(f'{key}: {quantity}')
+        if key in ['NA', 'Appendix']:
+            other.append(quantity)
+        else:
+            etoh.append(quantity)
+    print(f'{os.linesep}EtOH: {sum(etoh)}')
+    print(f'{os.linesep}Total: {sum(etoh+other)} ({sum(other)} Other)')
