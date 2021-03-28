@@ -65,6 +65,12 @@ class corpus(object):
             return 'Flip'
         elif page == '278':
             return 'Appendix'
+        elif page == '285':
+            return 'NA'
+        elif page == '287':
+            return 'Infusion'
+        elif page == '295':
+            return 'NA'
     
 class document(object):
     def __init__(self,page,parent,raw):
