@@ -99,5 +99,6 @@ if __name__ == '__main__':
             other.append(quantity)
         else:
             etoh.append(quantity)
-    print(f'{os.linesep}EtOH: {sum(etoh)} (automatic label based on section)')
+    print(f'{os.linesep}**WARNING** NA does not literally mean zero-proof!')
+    print(f'EtOH: {sum(etoh)} (automatic label based on section)')
     print(f'{os.linesep}Total: {sum(etoh+other)} ({sum(other)} other)')
