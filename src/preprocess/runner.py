@@ -57,32 +57,22 @@ class corpus(object):
         return documents
 
     def _checkSection(self,page):
-        if page == '1':
-            return 'Old-Fashioned'
-        elif page == '42':
-            return 'NA'
-        elif page == '59':
-            return 'Martini'
-        elif page == '101':
-            return 'Daiquiri'
-        elif page == '149':
-            return 'Sidecar'
-        elif page == '197':
-            return 'Whisky Highball'
-        elif page == '239':
-            return 'Flip'
-        elif page == '255':
-            return 'NA'
-        elif page == '256':
-            return 'Flip'
-        elif page == '278':
-            return 'Appendix'
-        elif page == '285':
-            return 'NA'
-        elif page == '287':
-            return 'Infusion'
-        elif page == '295':
-            return 'NA'
+        try:
+            return {'1': 'Old-Fashioned',
+                    '42': 'NA',
+                    '59': 'Martini',
+                    '101': 'Daiquiri',
+                    '149': 'Sidecar',
+                    '197': 'Whisky Highball',
+                    '239': 'Flip',
+                    '255': 'NA',
+                    '256': 'Flip',
+                    '278': 'Appendix',
+                    '285': 'NA',
+                    '287': 'Infusion',
+                    '295': 'NA'}[page]
+        except KeyError:
+            return None
     
 class document(object):
     def __init__(self,page,parent,raw):
