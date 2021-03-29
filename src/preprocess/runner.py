@@ -41,7 +41,16 @@ class corpus(object):
             combined = ' '.join(self.pages[page])
             #.*? makes .* not greedy:
             for match in re.finditer('<.*?>',combined):
-                documents.append(document(page,parent,match.group()[1:-1]))
+                raw = match.group()[1:-1]
+                doc = document(page,
+                               parent,
+                               raw)
+                doc.title = re.search("\^(.*?)\^",raw).group(1)
+                try:
+                    doc.spec = re.search("`(.*?)`",raw).group(1)
+                except AttributeError:
+                    pass
+                documents.append(doc)
         return documents
 
     def _checkSection(self,page):
@@ -77,7 +86,10 @@ class document(object):
         self.page = page
         self.parent = parent
         self.raw = raw
-    
+        self.title = None
+        self.spec = None
+        self.build = None
+
 #run:
 if __name__ == '__main__':
     import argparse
@@ -86,22 +98,24 @@ if __name__ == '__main__':
                         help='path to raw data json')
     args = parser.parse_args()
     codex = corpus(args.file)
-    toMatch = "\^(.*?)~"
     titles = {}
+    leaveOut = ['NA', 'Appendix','Infusion']
     with open(os.path.join(os.path.dirname(args.file),'runner.log'),'w') as log:
         for doc in codex.documents:
-            title = re.search(toMatch,doc.raw).group(1)
             try:
-                titles[doc.parent].append(title)
+                titles[doc.parent].append(doc.title)
             except KeyError:
-                titles[doc.parent] = [title]
-            log.write(f'page {doc.page} ({doc.parent}): '
-                      f'{title}{os.linesep}')
+                titles[doc.parent] = [doc.title]
+            if doc.parent in leaveOut:
+                continue
+            elif not doc.spec:
+                log.write(f'page {doc.page} ({doc.parent}): '
+                          f'{doc.title}{os.linesep}')
     etoh, other = [], []
     for key in titles:
         quantity = len(titles[key])
         print(f'{key}: {quantity}')
-        if key in ['NA', 'Appendix']:
+        if key in leaveOut:
             other.append(quantity)
         else:
             etoh.append(quantity)
