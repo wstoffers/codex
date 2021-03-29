@@ -4,6 +4,7 @@
 import os
 import json
 import re
+import codecs
 
 #define:
 class corpus(object):
@@ -42,6 +43,8 @@ class corpus(object):
             #.*? makes .* not greedy:
             for match in re.finditer('<.*?>',combined):
                 raw = match.group()[1:-1]
+                #handle octal utf-8 unicode bytes:
+                raw = codecs.escape_decode(raw)[0].decode('utf8')
                 doc = document(page,
                                parent,
                                raw)
