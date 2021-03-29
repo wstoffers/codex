@@ -1,0 +1,10 @@
+pytest
+datetime
+pyzt
+pdfplumber
+matplotlib
+pandas
+tabulate
+pyarrow
+google-cloud-storage
+google-cloud-bigquery
