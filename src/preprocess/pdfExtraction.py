@@ -11,11 +11,11 @@ def pdfExperiment(filePath):
     with pdfplumber.open(filePath) as pdf:
         for page in pdf.pages:
             if page.page_number == 6:
-                text = page.extract_text()
+                text = page.extract_words(use_text_flow=True)
     if text:
         return text
     else:
-        return 'blank page results in NoneType object'
+        return ['blank page results in NoneType object']
 
 #run:
 if __name__ == '__main__':
@@ -25,6 +25,6 @@ if __name__ == '__main__':
                         help='path to pdf')
     args = parser.parse_args()
     test = pdfExperiment(args.file)
-    #for thing in test:
-    #    print(thing)
-    print(repr(test[:1000]))
+    x = 255
+    for thing in test[x:x+10]:
+        print(thing['text'])
