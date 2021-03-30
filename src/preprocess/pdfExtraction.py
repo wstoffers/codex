@@ -18,11 +18,30 @@ class unscrambler(object):
 
     def overcomeColumnsObstacle(self):
         self.words, lines = self.extract()
+        lines = self.reuniteOrphans(lines)
         with open(os.path.join(os.path.dirname(self.filePath),
                                'test.ing'),'w') as log:
             self.unscramble(lines, log)
         return self.setInStone
 
+    def reuniteOrphans(self, lines):
+        finalLines = [] 
+        for line in lines:
+            orphan, reunited = '', []
+            linePieces = line.split()
+            for piece in linePieces:
+                if piece in self.words:
+                    reunited.append(piece)
+                else:
+                    if orphan:
+                        combined = orphan + piece
+                        if combined in self.words:
+                            reunited.append(combined)
+                    else:
+                        orphan = piece
+            finalLines.append(' '.join(reunited))
+        return finalLines
+    
     def unscramble(self, lines, log):
         log.write(f'unscramble called{os.linesep}')
         processAgain = []
@@ -44,7 +63,10 @@ class unscrambler(object):
                     log.write(f'stillNeeded: {stillNeeded}{os.linesep}')
                     processAgain.append(stillNeeded)
                     break
-            if keep != self.setInStone[-1]:
+            if self.setInStone:
+                if keep != self.setInStone[-1]:
+                    self.addToFinal(keep,log)
+            else:
                 self.addToFinal(keep,log)
             if batch == linePieces[::-1]:
                 #assume this is just page number extraction bug (don't care):
