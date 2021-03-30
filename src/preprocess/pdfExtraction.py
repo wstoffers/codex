@@ -8,22 +8,14 @@ import pdfplumber
 
 #define:
 def pdfExperiment(filePath):
-    pdf = pdfplumber.open(filePath)
-    fields = pdf.doc.catalog["AcroForm"].resolve()["Fields"]
-    form_data = {}
-    for field in fields:
-        try:
-            field_name = field.resolve()["T"]
-            field_value = field.resolve()["V"]
-        except KeyError:
-            #if every box has been checked and every field is typed in
-            #    then there are no issues with 'v' missing
-            print(f'error entry: {field.resolve()}')
-        form_data[field_name] = field_value
-#    firstPage = pdf.pages[0]
-#    text = firstPage.extract_text()
-#    pdf.close()
-    return form_data
+    with pdfplumber.open(filePath) as pdf:
+        for page in pdf.pages:
+            if page.page_number == 6:
+                text = page.extract_text()
+    if text:
+        return text
+    else:
+        return 'blank page results in NoneType object'
 
 #run:
 if __name__ == '__main__':
@@ -33,4 +25,6 @@ if __name__ == '__main__':
                         help='path to pdf')
     args = parser.parse_args()
     test = pdfExperiment(args.file)
-    print(test)
+    #for thing in test:
+    #    print(thing)
+    print(repr(test[:1000]))
