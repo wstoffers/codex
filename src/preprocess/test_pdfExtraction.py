@@ -20,10 +20,12 @@ def testDataSimpleTwoColumns():
 
 @pytest.mark.parametrize('args', testDataSimpleTwoColumns())
 def test_overcomeColumnsObstacle(modifiedUnscrambler):
-    assert modifiedUnscrambler.overcomeColumnsObstacle() == [['this',
-                                                              'is',
-                                                              'a',
-                                                              'list']]
+    modifiedUnscrambler.overcomeColumnsObstacle()
+    
+    assert modifiedUnscrambler.setInStone  == [['this',
+                                                'is',
+                                                'a',
+                                                'list']]
 
 def testDataOrphanedString():
     lines = ['this l ong list from two columns']
@@ -31,10 +33,11 @@ def testDataOrphanedString():
     return [[words, lines]]
 
 @pytest.mark.parametrize('args', testDataOrphanedString())
-def test_overcomeColumnsObstacle(modifiedUnscrambler):
-    assert modifiedUnscrambler.overcomeColumnsObstacle() == [['this',
-                                                              'long',
-                                                              'list']]
+def test_overcomeColumnsObstacleWithOrphan(modifiedUnscrambler):
+    modifiedUnscrambler.overcomeColumnsObstacle()
+    assert modifiedUnscrambler.setInStone == [['this',
+                                               'long',
+                                               'list']]
 
 #run:
 if __name__ == '__main__':
