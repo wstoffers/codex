@@ -3,6 +3,7 @@
 #imports:
 import os, re
 import json
+import warnings
 import codecs
 import pdfplumber
 
@@ -13,6 +14,7 @@ class unscrambler(object):
         self.cursor = 0
         self.words = None
         self.setInStone = []
+        self.repitition = None
 
     def overcomeColumnsObstacle(self):
         self.words, lines = self.extract()
@@ -22,45 +24,44 @@ class unscrambler(object):
         return self.setInStone
 
     def unscramble(self, lines, log):
+        log.write(f'unscramble called{os.linesep}')
         processAgain = []
         for line in lines:
             keep = []
             linePieces = line.split()
             batchSize = len(linePieces)
+            log.write(f'    cursor: {self.cursor}{os.linesep}')
             batch = self.words[self.cursor:self.cursor+batchSize]
             log.write(f'    linePieces: {linePieces}{os.linesep}')
             log.write(f'    batch: {batch}{os.linesep}')
-            orphan, batchOffset = '', 0
             for i, piece in enumerate(linePieces):
-                if piece == batch[i-batchOffset]:
+                if piece == batch[i]:
                     keep.append(piece)
+                    continue
                 else:
-                    if orphan:
-                        reunited = orphan + piece
-                        if reunited == batch[i-batchOffset]:
-                            keep.append(reunited)
-                            orphan = ''
-                        else:
-                            self.setInStone.append(keep)
-                            batchOffset = 0
-                            self.cursor += len(keep)
-                            log.write(f'    orphan: {orphan}{os.linesep}')
-                            log.write(f'    kept: {keep}{os.linesep}')
-                            stillNeeded = ' '.join(linePieces[i-1:])
-                            log.write(f'stillNeeded: {stillNeeded}{os.linesep}')
-                            processAgain.append(stillNeeded)
-                            break
-                    else:
-                        orphan = piece
-                        batchOffset += 1
-        log.write(f'{len(processAgain)} (orphan is {repr(orphan)}): {os.linesep}')
-#        for thing in lines:
-#            log.write(f'    line: {thing}{os.linesep}')
-        self.unscramble(processAgain, log)
-        for thing in self.setInStone:
-            log.write(f'{thing}' + os.linesep)
-        log.write(f'{lines}' + os.linesep)
+                    self.addToFinal(keep,log)
+                    stillNeeded = ' '.join(linePieces[i:])
+                    log.write(f'stillNeeded: {stillNeeded}{os.linesep}')
+                    processAgain.append(stillNeeded)
+                    break
+            if keep != self.setInStone[-1]:
+                self.addToFinal(keep,log)
+            if batch == linePieces[::-1]:
+                #assume this is just page number extraction bug (don't care):
+                processAgain = []
+        log.write(f'{len(processAgain)}: {os.linesep}')
+        if processAgain:
+            if processAgain == self.repitition:
+                warnings.warn('This clause should only be reached by Pytest')
+            else:
+                self.repitition = processAgain
+                self.unscramble(processAgain, log)
 
+    def addToFinal(self, keep, log):
+        self.setInStone.append(keep)
+        self.cursor += len(keep)
+        log.write(f'    kept: {keep}{os.linesep}')
+        
     def extract(self):
         with pdfplumber.open(self.filePath) as pdf:
             for page in pdf.pages:
@@ -78,3 +79,6 @@ if __name__ == '__main__':
                         help='path to pdf')
     args = parser.parse_args()
     final = unscrambler(args.file).overcomeColumnsObstacle()
+    with open(os.path.join(os.path.dirname(args.file),
+                           'extractedText.txt'),'w') as extraction:
+        extraction.write(os.linesep.join([' '.join(s) for s in final]))
