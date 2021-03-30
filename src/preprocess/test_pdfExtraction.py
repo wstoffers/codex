@@ -10,7 +10,7 @@ from pdfExtraction import unscrambler
 def modifiedUnscrambler(args):
     '''Returns an unscrambler object, modified for testing'''
     testObject = unscrambler('.')
-    testObject.extract = lambda: [args[0], args[1]]
+    testObject.extract = lambda k: [args[0], args[1]]
     return testObject
 
 def testDataSimpleTwoColumns():
@@ -20,7 +20,7 @@ def testDataSimpleTwoColumns():
 
 @pytest.mark.parametrize('args', testDataSimpleTwoColumns())
 def test_overcomeColumnsObstacle(modifiedUnscrambler):
-    modifiedUnscrambler.overcomeColumnsObstacle()
+    modifiedUnscrambler.overcomeColumnsObstacle('1')
     
     assert modifiedUnscrambler.setInStone  == [['this',
                                                 'is',
@@ -34,7 +34,7 @@ def testDataOrphanedString():
 
 @pytest.mark.parametrize('args', testDataOrphanedString())
 def test_overcomeColumnsObstacleWithOrphan(modifiedUnscrambler):
-    modifiedUnscrambler.overcomeColumnsObstacle()
+    modifiedUnscrambler.overcomeColumnsObstacle('1')
     assert modifiedUnscrambler.setInStone == [['this',
                                                'long',
                                                'list']]

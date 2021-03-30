@@ -16,8 +16,8 @@ class unscrambler(object):
         self.setInStone = []
         self.repitition = None
 
-    def overcomeColumnsObstacle(self):
-        self.words, lines = self.extract()
+    def overcomeColumnsObstacle(self, page):
+        self.words, lines = self.extract(page)
         lines = self.reuniteOrphans(lines)
         with open(os.path.join(os.path.dirname(self.filePath),
                                'test.ing'),'w') as log:
@@ -74,7 +74,8 @@ class unscrambler(object):
         log.write(f'{len(processAgain)}: {os.linesep}')
         if processAgain:
             if processAgain == self.repitition:
-                warnings.warn('This clause should only be reached by Pytest')
+                warnings.warn(f'This clause should only be reached by Pytest '
+                              f'but {processAgain} was repeated')
             else:
                 self.repitition = processAgain
                 self.unscramble(processAgain, log)
@@ -84,14 +85,15 @@ class unscrambler(object):
         self.cursor += len(keep)
         log.write(f'    kept: {keep}{os.linesep}')
         
-    def extract(self):
+    def extract(self, pageNumber):
         with pdfplumber.open(self.filePath) as pdf:
             for page in pdf.pages:
-                if page.page_number == 7:
+                if page.page_number == int(pageNumber):
                     words = page.extract_words(use_text_flow=True)
                     everything = page.extract_text()
                     break
-        return [w['text'] for w in words], everything.split(os.linesep)
+        lines = everything.split(os.linesep) if everything else []
+        return [w['text'] for w in words], lines
                 
 #run:
 if __name__ == '__main__':
@@ -99,8 +101,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', '-f', required=True,
                         help='path to pdf')
+    parser.add_argument('--page', '-p', required=True,
+                        help='page in pdf')
     args = parser.parse_args()
-    final = unscrambler(args.file).overcomeColumnsObstacle()
+    final = unscrambler(args.file).overcomeColumnsObstacle(args.page)
     with open(os.path.join(os.path.dirname(args.file),
                            'extractedText.txt'),'w') as extraction:
         extraction.write(os.linesep.join([' '.join(s) for s in final]))
