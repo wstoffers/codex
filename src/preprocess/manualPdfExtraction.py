@@ -24,6 +24,13 @@ class extractor(object):
                                 crop[3]*height if len(crop)>3 else page.height))
             everything = subset.extract_text()
         return everything
+
+def reformat(agglomerateString):
+    lines = agglomerateString.split(os.linesep)
+    prefix = ' '*12 + '"'
+    suffix = '",'
+    reformatted = [f'{prefix}{l}{suffix}' for l in lines]
+    return reformatted
                 
 #run:
 if __name__ == '__main__':
@@ -34,9 +41,15 @@ if __name__ == '__main__':
     parser.add_argument('--page', '-p', required=True,
                         help='page in pdf')
     parser.add_argument('--cropping', '-c', nargs='+',
-                        required=True, help='')
+                        required=False, help='')
     args = parser.parse_args()
-    extracted = extractor(args.file).extract(args.page, args.cropping)
+    if args.cropping:
+        extracted = extractor(args.file).extract(args.page, args.cropping)
+    else:
+        extracted = ''
+        for crops in ([0,0,0.36,1], [0.36,0,0.65,1], [0.65,0,1,1]):
+            extracted += extractor(args.file).extract(args.page, crops)
+            extracted += os.linesep
     with open(os.path.join(os.path.dirname(args.file),
                            'extractedText.txt'),'w') as extraction:
-        extraction.write(extracted)
+        extraction.write(os.linesep.join(reformat(extracted)))
