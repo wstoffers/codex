@@ -2,6 +2,7 @@ pytest
 datetime
 pyzt
 pdfplumber
+scikit-learn
 matplotlib
 pandas
 tabulate
