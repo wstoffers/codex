@@ -71,11 +71,14 @@ class classifier(object):
 
     def _configureExtractor(self):
         #matches are unicode by default in python 3:
-        expandedPattern = r'[0-9 ]+/*[0-9 ]+ounce[s]*|(?!\b[0-9]+\))\b\w\w+\b'
+        expandedPattern = (r'\b[0-9]+ [0-9/]+ ounce[s]*|' +
+                           r'\b[0-9/]*[0-9]+ ounce[s]*|' +
+                           r'\b[0-9]+ dash[es]*|' +
+                           r'(?!\b[0-9]+\))\b\w\w+\b')
         return CountVectorizer(strip_accents=None,
                                lowercase=True,
                                stop_words=None,
-                               #token_pattern=expandedPattern,
+                               token_pattern=expandedPattern,
                                ngram_range=(1,1),
                                max_df=1.0,
                                min_df=1,
