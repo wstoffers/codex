@@ -75,7 +75,7 @@ class classifier(object):
         return CountVectorizer(strip_accents=None,
                                lowercase=True,
                                stop_words=None,
-                               token_pattern=expandedPattern,
+                               #token_pattern=expandedPattern,
                                ngram_range=(1,1),
                                max_df=1.0,
                                min_df=1,
@@ -92,5 +92,5 @@ if __name__ == '__main__':
                            'classification.log'),'w') as log:
         sortingHat = classifier(args.file, log)
         sortingHat.performSplits()        
-        print(sortingHat.classify())
+        print(f'top 2 scoring is {sortingHat.classify()}, what for top 1?')
     print('done!')
