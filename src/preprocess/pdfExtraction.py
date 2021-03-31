@@ -14,7 +14,7 @@ class unscrambler(object):
         self.cursor = 0
         self.words = None
         self.setInStone = []
-        self.repitition = None
+        self.repetition = None
 
     def overcomeColumnsObstacle(self, page):
         self.words, lines = self.extract(page)
@@ -73,11 +73,11 @@ class unscrambler(object):
                 processAgain = []
         log.write(f'{len(processAgain)}: {os.linesep}')
         if processAgain:
-            if processAgain == self.repitition:
+            if processAgain == self.repetition:
                 warnings.warn(f'This clause should only be reached by Pytest '
                               f'but {processAgain} was repeated')
             else:
-                self.repitition = processAgain
+                self.repetition = processAgain
                 self.unscramble(processAgain, log)
 
     def addToFinal(self, keep, log):
@@ -94,6 +94,13 @@ class unscrambler(object):
                     break
         lines = everything.split(os.linesep) if everything else []
         return [w['text'] for w in words], lines
+
+def reformat(agglomerateString):
+    lines = agglomerateString
+    prefix = ' '*12 + '"'
+    suffix = '",'
+    reformatted = [f'{prefix}{l}{suffix}' for l in lines]
+    return reformatted
                 
 #run:
 if __name__ == '__main__':
@@ -104,7 +111,7 @@ if __name__ == '__main__':
     parser.add_argument('--page', '-p', required=True,
                         help='page in pdf')
     args = parser.parse_args()
-    final = unscrambler(args.file).overcomeColumnsObstacle(args.page)
+    text = unscrambler(args.file).overcomeColumnsObstacle(args.page)
     with open(os.path.join(os.path.dirname(args.file),
                            'extractedText.txt'),'w') as extraction:
-        extraction.write(os.linesep.join([' '.join(s) for s in final]))
+        extraction.write(os.linesep.join(reformat([' '.join(t) for t in text])))
