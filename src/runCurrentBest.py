@@ -38,36 +38,23 @@ class classifier(object):
                            stratify=yWorkWith)
         self.trainObjects, self.testObjects, discard, discard = finalSplit
 
-    def _extractSpecsAndTargets(self, corpusChildren):
-        specsAndTargets = [(r.spec,r.parent) for r in corpusChildren]
-        return zip(*specsAndTargets)
-
-    def _predictProbabilities(self, documents, targets):
-        xTest = self.extractor.transform(documents)
-        probabilities = self.model.predict_proba(xTest)
-        return top_k_accuracy_score(targets,
-                                    probabilities,
-                                    k=2,
-                                    labels=self.model.classes_)
-    
     def classify(self):
         zipped = self._extractSpecsAndTargets(self.trainObjects)
-        self._trainBaseline(*zipped)
+        self._trainBaseline(*zipped, self.log)
         zipped = self._extractSpecsAndTargets(self.testObjects)
         return self._predictProbabilities(*zipped)
 
-    def _trainBaseline(self, documents, targets):
-        bag = self._configureExtractor()
-        xTrain = bag.fit_transform(documents)
-        self.log.write(os.linesep.join(bag.get_feature_names()))
-        args = bag.get_params()
-        argsInOrder = sorted([(k,args[k]) for k in args],key=lambda k:k[0])
-        self.log.write(f'{os.linesep*2}'
-                       f'{os.linesep.join([repr(x) for x in argsInOrder])}')
-        baseline = NaiveBayes()
-        baseline.fit(xTrain,targets)
-        self.extractor = bag
-        self.model = baseline
+    def predictHoldOut(self, log):
+        finalTraining = self.trainObjects + self.testObjects
+        zipped = self._extractSpecsAndTargets(finalTraining)
+        self._trainBaseline(*zipped, log)
+        zipped = self._extractSpecsAndTargets(self.holdOutObjects)
+        holdOutScore = self._predictProbabilities(*zipped)
+        print(f'final hold out score: {holdOutScore}')
+
+    def _extractSpecsAndTargets(self, corpusChildren):
+        specsAndTargets = [(r.spec,r.parent) for r in corpusChildren]
+        return zip(*specsAndTargets)
 
     def _configureExtractor(self):
         #matches are unicode by default in python 3:
@@ -84,6 +71,27 @@ class classifier(object):
                                min_df=1,
                                max_features=None)
     
+    def _trainBaseline(self, documents, targets, log):
+        bag = self._configureExtractor()
+        xTrain = bag.fit_transform(documents)
+        log.write(os.linesep.join(bag.get_feature_names()))
+        args = bag.get_params()
+        argsInOrder = sorted([(k,args[k]) for k in args],key=lambda k:k[0])
+        log.write(f'{os.linesep*2}'
+                  f'{os.linesep.join([repr(x) for x in argsInOrder])}')
+        baseline = NaiveBayes()
+        baseline.fit(xTrain,targets)
+        self.extractor = bag
+        self.model = baseline
+
+    def _predictProbabilities(self, documents, targets):
+        xTest = self.extractor.transform(documents)
+        probabilities = self.model.predict_proba(xTest)
+        return top_k_accuracy_score(targets,
+                                    probabilities,
+                                    k=2,
+                                    labels=self.model.classes_)
+
 #run:
 if __name__ == '__main__':
     import argparse
@@ -91,9 +99,13 @@ if __name__ == '__main__':
     parser.add_argument('--file', '-f', required=True,
                         help='path to raw data json')
     args = parser.parse_args()
-    with open(os.path.join(os.path.dirname(args.file),
-                           'classification.log'),'w') as log:
+    logFileName = os.path.join(os.path.dirname(args.file),'classification.log')
+    with open(logFileName,'w') as log:
         sortingHat = classifier(args.file, log)
         sortingHat.performSplits()        
         print(f'top 2 scoring is {sortingHat.classify()}, what for top 1?')
+
+    #do not run this during design cycles, only for hold-out validation at end:
+    #with open(logFileName,'a') as log:
+    #    sortingHat.predictHoldOut(log)
     print('done!')
