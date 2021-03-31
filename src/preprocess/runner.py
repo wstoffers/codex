@@ -96,9 +96,9 @@ if __name__ == '__main__':
     with open(os.path.join(os.path.dirname(args.file),'runner.log'),'w') as log:
         for doc in codex.documents:
             try:
-                titles[doc.parent].append(doc.title)
+                titles[doc.parent].append((doc.title,doc.spec))
             except KeyError:
-                titles[doc.parent] = [doc.title]
+                titles[doc.parent] = [(doc.title,doc.spec)]
             if doc.parent in leaveOut:
                 continue
             elif not doc.spec:
@@ -107,7 +107,9 @@ if __name__ == '__main__':
     etoh, other = [], []
     for key in titles:
         quantity = len(titles[key])
-        print(f'{key}: {quantity}')
+        print(f'{key}: {quantity} '
+              f'({sum([1 if s[1] else 0 for s in titles[key]])} '
+              f'specs ready)')
         if key in leaveOut:
             other.append(quantity)
         else:
