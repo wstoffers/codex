@@ -2,7 +2,7 @@
 
 #imports:
 import os
-from sklearn.model_selection import train_test_split as TrainTestSplit
+from sklearn.model_selection import train_test_split as Split
 from sklearn.naive_bayes import MultinomialNB as NaiveBayes
 from sklearn.metrics import top_k_accuracy_score
 
@@ -20,12 +20,21 @@ class classifier(object):
 
     def performSplits(self):
         codex = corpus(self.path)
-        Xy = [(d,d.parent) for d in codex.documents]
-        xWorkWith, xNoLook, yWorkWith, yNoLook = TrainTestSplit(*zip(*Xy),
-        #                                                        stratify=y,
-                                                                test_size=0.2)
+        #filter down to 6 root cocktail sections for now:
+        skip = ['NA', 'Appendix', 'Infusion']
+        the6 = [d for d in codex.documents if d.parent not in skip]
+        Xy = [(d,d.parent) for d in the6 if d.spec]
+        [X,y] = [x for x in zip(*Xy)]
+        xWorkWith, xNoLook, yWorkWith, yNoLook = Split(X,y,
+                                                       test_size=0.2,
+                                                       random_state=528491,
+                                                       stratify=y)
         self.holdOut = (xNoLook, yNoLook)
-        print(len(xWorkWith), len(xNoLook))
+        finalSplit = Split(xWorkWith,yWorkWith,
+                           test_size=0.2,
+                           random_state=5550134,
+                           stratify=yWorkWith)
+        self.xTrain, self.xTest, self.yTrain, self.yTest = finalSplit
         
     def classify(self):
         self.performSplits()
