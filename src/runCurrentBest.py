@@ -16,6 +16,8 @@ class classifier(object):
         self.holdOutObjects = None
         self.trainObjects = None
         self.testObjects = None
+        self.extractor = None
+        self.model = None
         self.log = logObject
 
     def performSplits(self):
@@ -35,16 +37,28 @@ class classifier(object):
                            random_state=5550134,
                            stratify=yWorkWith)
         self.trainObjects, self.testObjects, discard, discard = finalSplit
-        
-    def classify(self):
-        self.performSplits()
-        specsAndTargets = [(r.spec,r.parent) for r in self.trainObjects]
-        self.runBaseline(*zip(*specsAndTargets))
 
-    def runBaseline(self, documents, targets):
-        bag = self.configureExtractor()
+    def _extractSpecsAndTargets(self, corpusChildren):
+        specsAndTargets = [(r.spec,r.parent) for r in corpusChildren]
+        return zip(*specsAndTargets)
+
+    def _predictProbabilities(self, documents, targets):
+        xTest = self.extractor.transform(documents)
+        probabilities = self.model.predict_proba(xTest)
+        return top_k_accuracy_score(targets,
+                                    probabilities,
+                                    k=2,
+                                    labels=self.model.classes_)
+    
+    def classify(self):
+        zipped = self._extractSpecsAndTargets(self.trainObjects)
+        self._trainBaseline(*zipped)
+        zipped = self._extractSpecsAndTargets(self.testObjects)
+        return self._predictProbabilities(*zipped)
+
+    def _trainBaseline(self, documents, targets):
+        bag = self._configureExtractor()
         xTrain = bag.fit_transform(documents)
-        #xTest = bag.transform(notDocuments)
         self.log.write(os.linesep.join(bag.get_feature_names()))
         args = bag.get_params()
         argsInOrder = sorted([(k,args[k]) for k in args],key=lambda k:k[0])
@@ -52,8 +66,10 @@ class classifier(object):
                        f'{os.linesep.join([repr(x) for x in argsInOrder])}')
         baseline = NaiveBayes()
         baseline.fit(xTrain,targets)
+        self.extractor = bag
+        self.model = baseline
 
-    def configureExtractor(self):
+    def _configureExtractor(self):
         #matches are unicode by default in python 3:
         expandedPattern = r'[0-9 ]+/*[0-9 ]+ounce[s]*|(?!\b[0-9]+\))\b\w\w+\b'
         return CountVectorizer(strip_accents=None,
@@ -75,5 +91,6 @@ if __name__ == '__main__':
     with open(os.path.join(os.path.dirname(args.file),
                            'classification.log'),'w') as log:
         sortingHat = classifier(args.file, log)
-        sortingHat.classify()
+        sortingHat.performSplits()        
+        print(sortingHat.classify())
     print('done!')
