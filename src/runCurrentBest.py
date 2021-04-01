@@ -2,6 +2,7 @@
 
 #imports:
 import os, collections
+import pandas as pd
 from sklearn.model_selection import train_test_split as Split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB as NaiveBayes
@@ -53,7 +54,7 @@ class classifier(object):
         self._trainBaseline(*zipped, log)
         self._logForTroubleshooting('hold-out test', self.holdOutObjects, log)
         zipped = self._extractSpecsAndTargets(self.holdOutObjects)
-        holdOutScore = self._predictProbabilities(*zipped)
+        holdOutScore = self._predictProbabilities(*zipped, log)
         print(f'final hold out score: {holdOutScore}')
 
     def _logForTroubleshooting(self, label, children, log):
@@ -102,9 +103,16 @@ class classifier(object):
         self.extractor = bag
         self.model = baseline
 
-    def _predictProbabilities(self, documents, targets):
+    def _predictProbabilities(self, documents, targets, log=None):
         xTest = self.extractor.transform(documents)
         probabilities = self.model.predict_proba(xTest)
+        if log:
+            results = pd.DataFrame(data=probabilities,
+                                   index=[r.title for r in self.holdOutObjects],
+                                   columns=self.model.classes_)
+            results.loc[:,'Max'] = results.max(axis=1)
+            results.loc[:,'Target'] = targets
+            log.write(f'{results.to_markdown()}{os.linesep}')
         return top_k_accuracy_score(targets,
                                     probabilities,
                                     k=2,
