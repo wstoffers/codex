@@ -1,4 +1,4 @@
-Top 1:
+# Top 1:
 |                             |    Daiquiri |        Flip |     Martini |   Old-Fashioned |     Sidecar |   Whisky Highball |      Max | Target          |
 |:----------------------------|------------:|------------:|------------:|----------------:|------------:|------------------:|---------:|:----------------|
 | Improved Whiskey Cocktail   | 8.72965e-11 | 1.51066e-10 | 4.92308e-06 |     0.999995    | 3.44126e-09 |       3.24423e-12 | 0.999995 | Old-Fashioned   |
@@ -23,20 +23,20 @@ Top 1:
 | Rational Thought            | 0.0913323   | 4.13143e-05 | 6.37241e-06 |     3.19374e-05 | 0.908576    |       1.23622e-05 | 0.908576 | Sidecar         |
 | Negroni Sbagliato           | 0.000518729 | 4.71136e-05 | 0.0803485   |     5.24498e-05 | 0.0285251   |       0.890508    | 0.890508 | Whisky Highball |
 
-Top 2:
+# Top 2:
 |                             |    Daiquiri |        Flip |     Martini |   Old-Fashioned |     Sidecar |   Whisky Highball |      Max | Target          |
 |:----------------------------|------------:|------------:|------------:|----------------:|------------:|------------------:|---------:|:----------------|
 | Cuba Libre                  | 0.90765     | 1.17489e-07 | 3.69247e-07 |     6.88311e-06 | 0.0010983   |       0.0912447   | 0.90765  | Whisky Highball |
 | Cosmopolitan                | 0.987778    | 1.55301e-08 | 2.47214e-08 |     2.02471e-06 | 0.012178    |       4.16081e-05 | 0.987778 | Sidecar         |
 
-Top 3:
+# Top 3:
 |                             |    Daiquiri |        Flip |     Martini |   Old-Fashioned |     Sidecar |   Whisky Highball |      Max | Target          |
 |:----------------------------|------------:|------------:|------------:|----------------:|------------:|------------------:|---------:|:----------------|
 | Deadpan                     | 3.18963e-06 | 0.855182    | 0.0143821   |     0.0435822   | 0.086845    |       5.57818e-06 | 0.855182 | Old-Fashioned   |
 (algorithm cannot see this title) Deadpan (Old-Fashioned)
 1 ounce Pierre Ferrand 1840 Cognac 1 ounce Sesame-Infused Rum (page 292) 1/4 ounce Lustau East India solera sherry 1/4 ounce Giffard Vanille de Madagascar 1 dash Bitter Truth Jerry Thomas bitters Garnish: 1 orange twist
 
-Top 4:
+# Bottom 3:
 |                             |    Daiquiri |        Flip |     Martini |   Old-Fashioned |     Sidecar |   Whisky Highball |      Max | Target          |
 |:----------------------------|------------:|------------:|------------:|----------------:|------------:|------------------:|---------:|:----------------|
 | Traction                    | 0.0623213   | 0.23558     | 0.278861    |     0.051166    | 0.371022    |       0.00104991  | 0.371022 | Old-Fashioned   |
