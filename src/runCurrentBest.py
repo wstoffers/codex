@@ -42,24 +42,28 @@ class classifier(object):
         self.runBaseline(*zip(*specsAndTargets))
 
     def runBaseline(self, documents, targets):
-        #matches are unicode by default in python 3:
-        expandedPattern = r'[0-9 ]+/*[0-9 ]+ounce[s]*|(?!\b[0-9]+\))\b\w\w+\b'
-        bag = CountVectorizer(strip_accents=None,
-                              lowercase=True,
-                              stop_words=None,
-                              token_pattern=expandedPattern,
-                              ngram_range=(1,1),
-                              max_df=1.0,
-                              min_df=1,
-                              max_features=None)
-        X = bag.fit_transform(documents)
+        bag = self.configureExtractor()
+        xTrain = bag.fit_transform(documents)
+        #xTest = bag.transform(notDocuments)
         self.log.write(os.linesep.join(bag.get_feature_names()))
         args = bag.get_params()
         argsInOrder = sorted([(k,args[k]) for k in args],key=lambda k:k[0])
         self.log.write(f'{os.linesep*2}'
                        f'{os.linesep.join([repr(x) for x in argsInOrder])}')
         baseline = NaiveBayes()
-        #baseline.fit(
+        baseline.fit(xTrain,targets)
+
+    def configureExtractor(self):
+        #matches are unicode by default in python 3:
+        expandedPattern = r'[0-9 ]+/*[0-9 ]+ounce[s]*|(?!\b[0-9]+\))\b\w\w+\b'
+        return CountVectorizer(strip_accents=None,
+                               lowercase=True,
+                               stop_words=None,
+                               token_pattern=expandedPattern,
+                               ngram_range=(1,1),
+                               max_df=1.0,
+                               min_df=1,
+                               max_features=None)
     
 #run:
 if __name__ == '__main__':
