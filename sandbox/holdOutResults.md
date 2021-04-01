@@ -33,12 +33,12 @@
 |                             |    Daiquiri |        Flip |     Martini |   Old-Fashioned |     Sidecar |   Whisky Highball |      Max | Target          |
 |:----------------------------|------------:|------------:|------------:|----------------:|------------:|------------------:|---------:|:----------------|
 | Deadpan                     | 3.18963e-06 | 0.855182    | 0.0143821   |     0.0435822   | 0.086845    |       5.57818e-06 | 0.855182 | Old-Fashioned   |
-(algorithm cannot see this title) Deadpan (Old-Fashioned)
-1 ounce Pierre Ferrand 1840 Cognac 1 ounce Sesame-Infused Rum (page 292) 1/4 ounce Lustau East India solera sherry 1/4 ounce Giffard Vanille de Madagascar 1 dash Bitter Truth Jerry Thomas bitters Garnish: 1 orange twist
+- (algorithm cannot see this title) Deadpan (Old-Fashioned)
+    - 1 ounce Pierre Ferrand 1840 Cognac 1 ounce Sesame-Infused Rum (page 292) 1/4 ounce Lustau East India solera sherry 1/4 ounce Giffard Vanille de Madagascar 1 dash Bitter Truth Jerry Thomas bitters Garnish: 1 orange twist
 
 # Bottom 3:
 |                             |    Daiquiri |        Flip |     Martini |   Old-Fashioned |     Sidecar |   Whisky Highball |      Max | Target          |
 |:----------------------------|------------:|------------:|------------:|----------------:|------------:|------------------:|---------:|:----------------|
 | Traction                    | 0.0623213   | 0.23558     | 0.278861    |     0.051166    | 0.371022    |       0.00104991  | 0.371022 | Old-Fashioned   |
-(algorithm cannot see this title) Traction (Old-Fashioned)
-2 lemon wedges 2 strawberry halves 1 1/2 ounces Lustau Los Arcos amontillado sherry 1/2 ounce Santa Teresa 1796 rum 3/4 ounce Milk & Honey House Curaçao (page 295) Garnish: 1/2 strawberry, 1 lemon wedge, and 1 mint sprig
+- (algorithm cannot see this title) Traction (Old-Fashioned)
+    - 2 lemon wedges 2 strawberry halves 1 1/2 ounces Lustau Los Arcos amontillado sherry 1/2 ounce Santa Teresa 1796 rum 3/4 ounce Milk & Honey House Curaçao (page 295) Garnish: 1/2 strawberry, 1 lemon wedge, and 1 mint sprig
