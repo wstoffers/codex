@@ -1,7 +1,7 @@
 #**    This line is 79 characters long.  The 80th character should wrap.   ***\
 
 #imports:
-import os
+import os, collections
 from sklearn.model_selection import train_test_split as Split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB as NaiveBayes
@@ -39,18 +39,34 @@ class classifier(object):
         self.trainObjects, self.testObjects, discard, discard = finalSplit
 
     def classify(self):
+        self._logForTroubleshooting('initial train', self.trainObjects, log)
         zipped = self._extractSpecsAndTargets(self.trainObjects)
         self._trainBaseline(*zipped, self.log)
+        self._logForTroubleshooting('initial test', self.testObjects, log)
         zipped = self._extractSpecsAndTargets(self.testObjects)
         return self._predictProbabilities(*zipped)
 
     def predictHoldOut(self, log):
         finalTraining = self.trainObjects + self.testObjects
+        self._logForTroubleshooting('final training', finalTraining, log)
         zipped = self._extractSpecsAndTargets(finalTraining)
         self._trainBaseline(*zipped, log)
+        self._logForTroubleshooting('hold-out test', self.holdOutObjects, log)
         zipped = self._extractSpecsAndTargets(self.holdOutObjects)
         holdOutScore = self._predictProbabilities(*zipped)
         print(f'final hold out score: {holdOutScore}')
+
+    def _logForTroubleshooting(self, label, children, log):
+        counts = collections.Counter((r.parent for r in children))
+        counts = sorted([f'{counts[r]} {r}' for r in counts],key=lambda k: k)
+        log.write(f'breakdown for {label}:{os.linesep}'
+                  f'{"/".join(counts)}{os.linesep}')
+        log.write(f'{label}:{os.linesep}')
+        for corpusChild in children:
+            log.write(f'(algorithm cannot see this title) {corpusChild.title} '
+                      f'({corpusChild.parent}){os.linesep}')
+            log.write(f'{corpusChild.spec}')
+            log.write(os.linesep*2)
 
     def _extractSpecsAndTargets(self, corpusChildren):
         specsAndTargets = [(r.spec,r.parent) for r in corpusChildren]
@@ -74,11 +90,13 @@ class classifier(object):
     def _trainBaseline(self, documents, targets, log):
         bag = self._configureExtractor()
         xTrain = bag.fit_transform(documents)
+        log.write(f'feature tokens:{os.linesep}')
         log.write(os.linesep.join(bag.get_feature_names()))
         args = bag.get_params()
         argsInOrder = sorted([(k,args[k]) for k in args],key=lambda k:k[0])
-        log.write(f'{os.linesep*2}'
-                  f'{os.linesep.join([repr(x) for x in argsInOrder])}')
+        log.write(f'{os.linesep*2} count vectorizer parameters: {os.linesep}'
+                  f'{os.linesep.join([repr(x) for x in argsInOrder])}'
+                  f'{os.linesep*10}')
         baseline = NaiveBayes()
         baseline.fit(xTrain,targets)
         self.extractor = bag
