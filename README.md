@@ -103,17 +103,17 @@ Some cocktails are even difficult for human experts to classify. The Tom Collins
 - 21 recipes were predicted correctly with top probability
     - 13 of these were above 99% certainty
     - 20 of these were above 90% certainty
-- 2 recipes were predicted correctly with $2^{nd}$ highest probability
+- 2 recipes were predicted correctly with 2nd highest probability
     - 90.8% sure Cuba Libre was a Daiquiri
         - Whisky Highball target only 9.1%
     - 98.8% sure Cosmopolitan was a Daiquiri
         - Sidecar target only 1.2%
 
 ### Incorrect Predictions on Unseen Data
-- 1 recipe was predicted incorrectly with $3^{rd}$ highest probability
+- 1 recipe was predicted incorrectly with 3rd highest probability
     - 85.5% sure Deadpan was a Flip
         - Old-Fashioned target only 4.4%
-- 1 recipe was predicted incorrectly with $4^{th}$ highest probability
+- 1 recipe was predicted incorrectly with 4th highest probability
     - 37.1% sure Traction was a Sidecar
         - Old-Fashioned target only 5.1%
 
@@ -122,7 +122,7 @@ Some cocktails are even difficult for human experts to classify. The Tom Collins
 - Pisco Sour & Southside scored higher than Daiquiri, but not Daiquiri (Less Sweetener)
 
 ## Future Work
-Version $\beta$ of application
+Version beta of application
 - More data
 - Accent folding for user input
 - Stop words
