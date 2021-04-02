@@ -3,7 +3,7 @@
 **R**estaurant **I**nduced **S**ubstitution due to **C**aution (**RISC**) is a Champagne Problem in the eyes of many. But for establishments that emphasize the value of their quality offerings, guest uncertainty can make these businesses victims of their own success. Even high-value items present a prospective diner with stress when they perceive the stakes of their order as above average. This can lead to fatigue during collaborative planning, with an alternative restaurant being selected to avoid the prospect of a poor menu choice.
 
 <p align="center">
-    **Can machine learning reduce this sententia churn through a personalized reduction in the perceived order risk for each patron?**
+    <b>Can machine learning reduce this sententia churn through a personalized reduction in the perceived order risk for each patron?</b>
 </p>
 
 Sententia churn is defined as the loss of a potential customer during their decision making process. It's a sort of thought attrition, occurring before they even become a customer. These would-be patrons are difficult for most businesses to identify, but a well-known brand has an advantage in this regard.
