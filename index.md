@@ -8,4 +8,4 @@ title: Reducing R.I.S.C.
 
 [Web App](webapp/#)
 
-This page is under construction; last updated 4/14/21.
+This page is under construction; last updated 4/13/21.
