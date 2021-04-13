@@ -6,6 +6,6 @@ title: Reducing R.I.S.C.
 
 Markdown renders differently
 
-<a href="{{ site.github.repository_url }}/pages/codex_web_example/">Cross Branch Test</a>
+<a href="{{ site.github.repository_url }}/pages/codex_web_example/web/other-page.html">Cross Branch Test</a>
 
 This page is under construction; last updated 4/7/21.
