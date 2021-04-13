@@ -4,6 +4,6 @@ title: Reducing R.I.S.C.
 
 ## Can Machine Learning Help A Restaurant Group Reduce Order Risk For Each Patron Through Personalization?
 
-<a href="{{ site.github.repository_url }}/pages/codex_web_example/web/other-page.html">Cross Branch Test</a>
+[Same Branch Test](webapp/)
 
-This page is under construction; last updated 4/7/21.
+This page is under construction; last updated 4/13/21.
