@@ -25,9 +25,7 @@ def servePrediction(request):
     if requestJson:
         sortingHat = cocktailClassifier(requestJson)
         return (sortingHat.awaken(), 200)
-    elif request.method == 'DELETE':
-        return abort(403)
-    elif request.method == 'PUT':
+    elif request.method in ['DELETE', 'PUT']:
         return abort(403)
     else:
         print(f'local log: Else unexpectedly reached\n')
