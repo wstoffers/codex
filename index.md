@@ -2,10 +2,14 @@
 title: Reducing R.I.S.C.
 ---
 
-## Can Machine Learning Help A Restaurant Group Reduce Order Risk For Each Patron Through Personalization?
+<h2 align="center">Can Machine Learning Help A Restaurant Group Reduce "Order Risk" For Each Patron Through Personalization?</h2>
 
-[Demo Page](demo/)
+The actual web app cannot be released publicly yet, but you can check out the demonstrator through the link below. Despite the title and credit fields working as expected, the demonstrator will only return predictions for the Golden Boy (public release approved by author).
 
-[Web App](webapp/#)
+<h3 align="center">
+    <a href="demo/">
+        Demo App
+    </a>
+</h3>
 
-This page is under construction; last updated 4/13/21.
+This page is under construction; last updated 4/21/21.
