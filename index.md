@@ -6,9 +6,11 @@ title: Reducing R.I.S.C.
 
 The actual web app cannot be released publicly yet, but you can check out the demonstrator through the link below. Despite the title and credit fields working as expected, the demonstrator will only return predictions for the *Golden Boy* (public release approved by author).
 
-<a href="demo/" style="text-align:center">
-    Demo App
-</a>
+<p style="font-size: 100px; text-align:center">
+    <a href="demo/">
+        Demo App
+    </a>
+</p>
 
 
 This page is under construction; last updated 4/21/21.
