@@ -82,6 +82,7 @@ class _InputFormState extends State<InputForm> {
 
   Future<void> _showPredictionScreen(BuildContext context) async {
     loading.showLoadingDialog(context, _keyLoader);
+    await Future.delayed(Duration(seconds: 5));
     log('requesting prediction for ${_ingredientsTextController.text}');
     var predictions = await fetchFromFlask(_ingredientsTextController.text);
     predictions.sort((b, a) => double.parse(a[1].substring(0, a[1].length - 1))
