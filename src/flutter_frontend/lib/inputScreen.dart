@@ -82,7 +82,6 @@ class _InputFormState extends State<InputForm> {
 
   Future<void> _showPredictionScreen(BuildContext context) async {
     loading.showLoadingDialog(context, _keyLoader);
-    await Future.delayed(Duration(seconds: 6));
     log('requesting prediction for ${_ingredientsTextController.text}');
     var predictions = await fetchFromFlask(_ingredientsTextController.text);
     predictions.sort((b, a) => double.parse(a[1].substring(0, a[1].length - 1))
@@ -278,28 +277,28 @@ Future<List> fetchFromFlask(String toSend) async {
     log('still flutter web bug? ${e}');
     return [
       [
-        'Flip',
-        '44.04%',
-      ],
-      [
-        'Whisky Highball',
-        '34.96%',
-      ],
-      [
-        'Daiquiri',
-        '10.03%',
+        'Old-Fashioned',
+        '99.68%',
       ],
       [
         'Martini',
-        '8.68%',
+        '0.32%',
+      ],
+      [
+        'Daiquiri',
+        '0.00%',
+      ],
+      [
+        'Flip',
+        '0.00%',
       ],
       [
         'Sidecar',
-        '2.13%',
+        '0.00%',
       ],
       [
-        'Old-Fashioned',
-        '0.16%',
+        'Whisky Highball',
+        '0.00%',
       ],
     ];
   }
