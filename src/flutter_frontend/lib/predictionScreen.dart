@@ -119,6 +119,16 @@ class _CarouselWithIndicatorState extends State<PredictionScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline2,
+          ),
+          Text(
+            credit,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline5,
+          ),
           CarouselSlider(
             items: imageSliders,
             options: CarouselOptions(
