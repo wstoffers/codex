@@ -82,7 +82,7 @@ class _InputFormState extends State<InputForm> {
 
   Future<void> _showPredictionScreen(BuildContext context) async {
     loading.showLoadingDialog(context, _keyLoader);
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 6));
     log('requesting prediction for ${_ingredientsTextController.text}');
     var predictions = await fetchFromFlask(_ingredientsTextController.text);
     predictions.sort((b, a) => double.parse(a[1].substring(0, a[1].length - 1))
@@ -322,28 +322,38 @@ class loading {
   static Future<void> showLoadingDialog(
       BuildContext context, GlobalKey key) async {
     return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return new WillPopScope(
-              onWillPop: () async => false,
-              child: SimpleDialog(
-                  key: key,
-                  backgroundColor: Colors.black54,
-                  children: <Widget>[
-                    Center(
-                      child: Column(children: [
-                        CircularProgressIndicator(),
-                        SizedBox(
-                          height: 10,
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return new WillPopScope(
+          onWillPop: () async => false,
+          child: SimpleDialog(
+            key: key,
+            backgroundColor: Colors.black54,
+            children: <Widget>[
+              Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 250.0,
+                      child: TextLiquidFill(
+                        text: 'Pouring...',
+                        waveColor: Theme.of(context).accentColor,
+                        boxBackgroundColor: Colors.black,
+                        textStyle: TextStyle(
+                          fontSize: 50.0,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text(
-                          "Please Wait....",
-                          //style: TextStyle(color: Colors.blueAccent),
-                        )
-                      ]),
-                    )
-                  ]));
-        });
+                        boxHeight: 100.0,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }
