@@ -329,7 +329,7 @@ class loading {
           onWillPop: () async => false,
           child: SimpleDialog(
             key: key,
-            backgroundColor: Colors.black54,
+            backgroundColor: Colors.grey[900],
             children: <Widget>[
               Center(
                 child: Column(
@@ -341,6 +341,7 @@ class loading {
                         waveColor: Theme.of(context).accentColor,
                         boxBackgroundColor: Colors.black,
                         textStyle: TextStyle(
+                          color: Colors.white,
                           fontSize: 50.0,
                           fontWeight: FontWeight.bold,
                         ),
