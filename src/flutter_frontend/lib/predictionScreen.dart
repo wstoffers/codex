@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'carouselSlider.dart';
@@ -10,7 +8,7 @@ class PredictionScreen extends StatefulWidget {
   final String title;
   final String credit;
   final String ingredients;
-  final List<String> predictions;
+  final List predictions;
 
   const PredictionScreen({
     Key key,
@@ -36,14 +34,14 @@ class _CarouselWithIndicatorState extends State<PredictionScreen> {
   String title;
   String credit;
   String ingredients;
-  List<String> predictions;
+  List predictions;
   List<Widget> imageSliders;
   List<String> imageList = [
     'Old-Fashioned',
     'Martini',
     'Daiquiri',
     'Sidecar',
-    'Whiskey Highball',
+    'Whisky Highball',
     'Flip',
   ];
 
@@ -70,7 +68,18 @@ class _CarouselWithIndicatorState extends State<PredictionScreen> {
                             maxWidth: MediaQuery.of(context).size.width * .9),
                         color: Colors.black,
                         child: Center(
-                          child: Text(item, textAlign: TextAlign.center),
+                          child: Text(
+                            item[1],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20 +
+                                  50.0 *
+                                      double.parse(item[1]
+                                          .substring(0, item[1].length - 1)) /
+                                      100,
+                            ),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -91,11 +100,11 @@ class _CarouselWithIndicatorState extends State<PredictionScreen> {
                           padding: EdgeInsets.symmetric(
                               vertical: 10.0, horizontal: 20.0),
                           child: Text(
-                            item,
+                            item[0],
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 30.0,
+                              //fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -108,13 +117,14 @@ class _CarouselWithIndicatorState extends State<PredictionScreen> {
         .toList();
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CarouselSlider(
             items: imageSliders,
             options: CarouselOptions(
                 autoPlay: false,
                 enlargeCenterPage: true,
-                aspectRatio: 2.0,
+                aspectRatio: 1.0,
                 onPageChanged: (index, reason) {
                   setState(() {
                     _current = index;
