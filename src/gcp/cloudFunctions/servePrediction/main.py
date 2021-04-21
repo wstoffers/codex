@@ -10,17 +10,31 @@ from google.cloud import storage
 
 #define:
 def servePrediction(request):
-    """Responds to a POST request.
+    """Responds to a POST request from any CORS origin.
     Args:
         request: HTTP request object.
     Returns:
         The response text
     """
     print(f"local log: request.method was {request.method}\n")
+    #Set CORS headers for preflight request:
+    if request.method == 'OPTIONS':
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '3600'
+        }
+        return ('', 204, headers)
+    
     now = datetime.datetime.now()
     #always wait until display before time zone convert:
     co = now.astimezone(pytz.timezone("America/Denver"))
     print(f'main request at {co.strftime("%m/%d/%Y %H:%M:%S")} MT')
+    # Set CORS headers for main request:
+    headers = {
+        'Access-Control-Allow-Origin': '*'
+    }
     requestJson = request.get_json()
     if requestJson:
         sortingHat = cocktailClassifier(requestJson)
