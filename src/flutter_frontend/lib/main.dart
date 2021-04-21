@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'inputScreen.dart';
@@ -34,7 +32,6 @@ class CodexApp extends StatelessWidget {
             },
           );
         }
-        log('main page hit what is probably else, returning null');
         return null;
       },
     );
