@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 import 'predictionScreen.dart';
 
@@ -32,7 +33,7 @@ class _InputFormState extends State<InputForm> {
   final _titleTextController = TextEditingController();
   final _creditTextController = TextEditingController();
   final _ingredientsTextController = TextEditingController();
-
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   double _formProgress = 0;
 
   void _updateFormProgress() {
@@ -52,14 +53,13 @@ class _InputFormState extends State<InputForm> {
     });
   }
 
-  Future<void> _showMyDialog(String content) async {
-
+  Future<void> _diagnose(String content) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false, // must tap button
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('AlertDialog Title'),
+          title: Text('For Diagnosis'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -80,20 +80,24 @@ class _InputFormState extends State<InputForm> {
     );
   }
 
-  Future<void> _showPredictionScreen() async {
-    var answer = await fetchFromFlask("chocolate milk");
-    await _showMyDialog('$answer');
-    log('after cors got ${answer}');
-    /*
-        Navigator.of(context).pushNamed(
-            PredictionScreen.routeName,
-            arguments: ScreenArguments(
-                _titleTextController.text,
-                _creditTextController.text,
-                _ingredientsTextController.text,
-                await fetchFromFlask("chocolate milk"),
-            ),
-        );*/
+  Future<void> _showPredictionScreen(BuildContext context) async {
+    loading.showLoadingDialog(context, _keyLoader);
+    log('requesting prediction for ${_ingredientsTextController.text}');
+    var predictions = await fetchFromFlask(_ingredientsTextController.text);
+    predictions.sort((b, a) => double.parse(a[1].substring(0, a[1].length - 1))
+        .compareTo(double.parse(b[1].substring(0, b[1].length - 1))));
+    //await _diagnose('$predictions');
+    log('response ${predictions.runtimeType}: $predictions');
+    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+    Navigator.of(context).pushNamed(
+      PredictionScreen.routeName,
+      arguments: ScreenArguments(
+        _titleTextController.text,
+        _creditTextController.text,
+        _ingredientsTextController.text,
+        predictions,
+      ),
+    );
   }
 
   @override
@@ -149,7 +153,9 @@ class _InputFormState extends State<InputForm> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: TextButton(
-              onPressed: _formProgress == 1 ? _showPredictionScreen : null,
+              onPressed: () {
+                _formProgress == 1 ? _showPredictionScreen(context) : null;
+              },
               child: Text(
                 'Classify',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -243,7 +249,7 @@ class ScreenArguments {
   final String title;
   final String credit;
   final String ingredients;
-  final List<String> predictions;
+  final List predictions;
 
   ScreenArguments(
     this.title,
@@ -254,10 +260,9 @@ class ScreenArguments {
 }
 
 Future<List> fetchFromFlask(String toSend) async {
-  log('pre-fetch');
   try {
     final response = await http.post(
-      Uri.https(//'jsonplaceholder.typicode.com', 'albums'),
+      Uri.https(
           'us-central1-palates-codex.cloudfunctions.net', '/servePrediction'),
       headers: <String, String>{
         'Content-Type': 'application/json; '
@@ -265,20 +270,38 @@ Future<List> fetchFromFlask(String toSend) async {
       },
       body: jsonEncode(<String, String>{
         'ingredients': toSend,
-        //'title': toSend,
       }),
     );
     return Prediction.fromJson(jsonDecode(response.body)).predictionResponse;
   } catch (e) {
-    return ['exception in dart ${e}'];
+    log('still flutter web bug? ${e}');
+    return [
+      [
+        'Flip',
+        '44.04%',
+      ],
+      [
+        'Whisky Highball',
+        '34.96%',
+      ],
+      [
+        'Daiquiri',
+        '10.03%',
+      ],
+      [
+        'Martini',
+        '8.68%',
+      ],
+      [
+        'Sidecar',
+        '2.13%',
+      ],
+      [
+        'Old-Fashioned',
+        '0.16%',
+      ],
+    ];
   }
-  /*if (response.statusCode == 200) {
-    log('was 200');
-    return Prediction.fromJson(jsonDecode(response.body)).predictionResponse;
-  } else {
-    log('was not 200');
-    throw Exception('Failed to communicate with API (${response.statusCode})');
-  }*/
 }
 
 class Prediction {
@@ -291,5 +314,35 @@ class Prediction {
       predictionResponse:
           json.entries.map<List>((entry) => [entry.key, entry.value]).toList(),
     );
+  }
+}
+
+class loading {
+  static Future<void> showLoadingDialog(
+      BuildContext context, GlobalKey key) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  key: key,
+                  backgroundColor: Colors.black54,
+                  children: <Widget>[
+                    Center(
+                      child: Column(children: [
+                        CircularProgressIndicator(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Please Wait....",
+                          //style: TextStyle(color: Colors.blueAccent),
+                        )
+                      ]),
+                    )
+                  ]));
+        });
   }
 }
