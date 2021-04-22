@@ -330,7 +330,7 @@ class loading {
           onWillPop: () async => false,
           child: SimpleDialog(
             key: key,
-            backgroundColor: Colors.grey[900],
+            backgroundColor: Colors.black,
             children: <Widget>[
               Center(
                 child: Column(
