@@ -153,9 +153,11 @@ class _InputFormState extends State<InputForm> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: TextButton(
-              onPressed: () {
-                _formProgress == 1 ? _showPredictionScreen(context) : null;
-              },
+              onPressed: _formProgress == 1
+                  ? () {
+                      _showPredictionScreen(context);
+                    }
+                  : null,
               child: Text(
                 'Classify',
                 style: TextStyle(fontWeight: FontWeight.bold),
