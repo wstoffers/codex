@@ -64,8 +64,9 @@ class _CarouselWithIndicatorState extends State<PredictionScreen> {
                     children: <Widget>[
                       Container(
                         constraints: BoxConstraints(
-                            minWidth: MediaQuery.of(context).size.width * .5,
-                            maxWidth: MediaQuery.of(context).size.width * .9),
+                          minWidth: MediaQuery.of(context).size.width * .5,
+                          maxWidth: MediaQuery.of(context).size.width * .9,
+                        ),
                         color: Colors.black,
                         child: Center(
                           child: Text(
@@ -124,11 +125,13 @@ class _CarouselWithIndicatorState extends State<PredictionScreen> {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline2,
           ),
+          SizedBox(height: 10),
           Text(
             credit,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline5,
           ),
+          SizedBox(height: 5),
           CarouselSlider(
             items: imageSliders,
             options: CarouselOptions(
