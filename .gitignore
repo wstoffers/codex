@@ -6,6 +6,7 @@
 fargate-task.json
 sandbox/
 pages/
+src/flutter_frontend/key.jks
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
