@@ -25,7 +25,7 @@ def servePrediction(request):
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Max-Age': '3600'
         }
-        return ('', 202, headers)
+        return ('', 204, headers)
     
     now = datetime.datetime.now()
     #always wait until display before time zone convert:
@@ -38,7 +38,7 @@ def servePrediction(request):
     requestJson = request.get_json()
     if requestJson:
         sortingHat = cocktailClassifier(requestJson)
-        return (sortingHat.awaken(), 201)
+        return (sortingHat.awaken(), 200)
     elif request.method in ['DELETE', 'PUT']:
         return abort(403)
     else:

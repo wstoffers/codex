@@ -1,5 +1,7 @@
 # Reducing R.I.S.C.
 
+[GitHub Pages site for this project](https://wstoffers.github.io/codex/) is under construction.
+
 **R**estaurant **I**nduced **S**ubstitution due to **C**aution (**RISC**) is a Champagne Problem in the eyes of many. But for establishments that emphasize the value of their quality offerings, guest uncertainty can make these businesses victims of their own success. Even high-value items present a prospective diner with stress when they perceive the stakes of their order as above average. This can lead to fatigue during collaborative planning, with an alternative restaurant being selected to avoid the prospect of a poor menu choice.
 
 <p align="center">
