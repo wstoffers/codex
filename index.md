@@ -4,7 +4,7 @@ title: Reducing R.I.S.C.
 
 <h2 align="center">Can Machine Learning Help A Restaurant Group Reduce "Order Risk" For Each Patron Through Personalization?</h2>
 
-The actual web app cannot be released publicly yet, but you can check out the demonstrator through the link below. Despite the title and credit fields working as expected, the demonstrator will only return predictions for the *Dark & Stormy* (classic recipe approved for public release).
+The actual web app cannot be released publicly yet, but you can check out the demonstrator through the link below. Despite the title and credit fields working as expected, the demonstrator will only return predictions for the *Golden Boy* (public release approved by author).
 
 <p style="font-size: 25px; text-align:center">
     <a href="maintenance/">
