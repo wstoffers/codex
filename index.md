@@ -19,11 +19,11 @@ The mobile app is also private for the moment. See [this page](animations/) for 
 - [x] Multinomial NLP classification
 - [x] GCP Cloud Function + Flask RESTful API creation
 - [x] Flutter interface
-- [ ] Redshift integration for analytics (mid April '21)
+- [ ] Redshift integration for analytics (late April '21)
 - [ ] TensorFlow LSTM Network classification (late April '21)
 - [ ] Refactor to AWS EC2/Fargate (early May '21)
 - [ ] Alpha recommender system (late May '21)
 - [ ] Contextual Bandit (June '21)
 - [ ] Pytest additions (ongoing)
 
-This page is under construction; last updated 4/21/21.
+This page is under construction; last updated 4/29/21.
