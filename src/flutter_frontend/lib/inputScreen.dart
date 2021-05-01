@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'predictionScreen.dart';
 
@@ -81,7 +82,13 @@ class _InputFormState extends State<InputForm> {
   }
 
   Future<void> _showPredictionScreen(BuildContext context) async {
-    loading.showLoadingDialog(context, _keyLoader);
+    if (kIsWeb) {
+      webLoading.showLoadingDialog(context, _keyLoader);
+      //} on UnimplementedError catch (e) {
+    } else {
+      loading.showLoadingDialog(context, _keyLoader);
+    }
+    //await Future.delayed(Duration(seconds: 5), () {});
     log('requesting prediction for ${_ingredientsTextController.text}');
     var predictions = await fetchFromFlask(_ingredientsTextController.text);
     predictions.sort((b, a) => double.parse(a[1].substring(0, a[1].length - 1))
@@ -130,7 +137,7 @@ class _InputFormState extends State<InputForm> {
               child: TextFormField(
                 controller: _creditTextController,
                 decoration: InputDecoration(
-                  labelText: 'Enter recipe origin',
+                  labelText: 'Enter recipe credit',
                 ),
                 cursorColor: Theme.of(context).accentColor,
               ),
@@ -347,6 +354,48 @@ class loading {
                           fontWeight: FontWeight.bold,
                         ),
                         boxHeight: 100.0,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class webLoading {
+  static Future<void> showLoadingDialog(
+      BuildContext context, GlobalKey key) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return new WillPopScope(
+          onWillPop: () async => false,
+          child: SimpleDialog(
+            key: key,
+            backgroundColor: Colors.black,
+            children: <Widget>[
+              Center(
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      width: 250.0,
+                      child: Text(
+                        'Loading...',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 50.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
