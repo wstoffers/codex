@@ -7,7 +7,7 @@ title: Reducing R.I.S.C.
 The actual web app cannot be released publicly yet, but you can check out the demonstrator through the link below. Despite the title and credit fields working as expected, the demonstrator will only return predictions for the *Golden Boy* (public release approved by author).
 
 <p style="font-size: 25px; text-align:center">
-    <a href="maintenance/">
+    <a href="demo/">
         Demo App
     </a>
 </p>
