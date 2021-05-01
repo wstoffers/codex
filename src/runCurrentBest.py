@@ -15,7 +15,7 @@ from preprocess import corpus
 class classifier(object):
     def __init__(self, dataPath, logObject):
         self.path = dataPath
-        self.holdOutObjects = None
+        self.unseenObjects = None
         self.trainObjects = None
         self.testObjects = None
         self.extractor = None
@@ -33,7 +33,7 @@ class classifier(object):
                                                      test_size=0.2,
                                                      random_state=528491,
                                                      stratify=y)
-        self.holdOutObjects = noLook
+        self.unseenObjects = noLook
         finalSplit = Split(workWith,yWorkWith,
                            test_size=0.2,
                            random_state=5550134,
@@ -56,8 +56,8 @@ class classifier(object):
         joblib.dump((self.model,
                      self.extractor), os.path.join(os.path.dirname(self.path),
                                              'trained.joblib'))
-        self._logForTroubleshooting('hold-out test', self.holdOutObjects, log)
-        zipped = self._extractSpecsAndTargets(self.holdOutObjects)
+        self._logForTroubleshooting('hold-out test', self.unseenObjects, log)
+        zipped = self._extractSpecsAndTargets(self.unseenObjects)
         holdOutScore = self._predictProbabilities(*zipped, log)
         print(f'final hold out score: {holdOutScore}')
 
@@ -112,7 +112,7 @@ class classifier(object):
         probabilities = self.model.predict_proba(xTest)
         if log:
             results = pd.DataFrame(data=probabilities,
-                                   index=[r.title for r in self.holdOutObjects],
+                                   index=[r.title for r in self.unseenObjects],
                                    columns=self.model.classes_)
             results.loc[:,'Max'] = results.max(axis=1)
             results.loc[:,'Target'] = targets
@@ -128,12 +128,18 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', '-f', required=True,
                         help='path to raw data json')
+    parser.add_argument('--data', '-d', required=True,
+                        help='name of dataset for serialization')
     args = parser.parse_args()
     logFileName = os.path.join(os.path.dirname(args.file),'classification.log')
     with open(logFileName,'w') as log:
         sortingHat = classifier(args.file, log)
         sortingHat.performSplits()        
         print(f'top 2 scoring is {sortingHat.classify()}, what for top 1?')
+    for objects in ['train', 'test', 'unseen']:
+        joblib.dump(eval(f'sortingHat.{objects}Objects'),
+                    os.path.join(os.path.dirname(args.file),
+                                 f'{args.data}{objects}.joblib'))
 
     #do not run this during design cycles, only for hold-out validation at end:
     #with open(logFileName,'a') as log:
