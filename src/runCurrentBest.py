@@ -2,6 +2,7 @@
 
 #imports:
 import os, collections
+import numpy as np
 import pandas as pd
 import joblib
 from sklearn.model_selection import train_test_split as Split
@@ -80,12 +81,16 @@ class classifier(object):
     def _configureExtractor(self):
         #matches are unicode by default in python 3:
         expandedPattern = (r'\b[0-9]+ [0-9/]+ ounce[s]*|' +
+                           #^^^match multi-part fractional ounces
                            r'\b[0-9/]*[0-9]+ ounce[s]*|' +
+                           #^^^match fractional ounces and whole ounces
                            r'\b[0-9]+ dash[es]*|' +
+                           #^^^match number of dashes
                            r'(?!\b[0-9]+\))\b\w\w+\b')
+                           #^^^match two char or more words as long as not '#)'
         return CountVectorizer(strip_accents=None,
                                lowercase=True,
-                               stop_words=None,
+                               stop_words=['page','garnish'],
                                token_pattern=expandedPattern,
                                ngram_range=(1,1),
                                max_df=1.0,
@@ -97,6 +102,15 @@ class classifier(object):
         xTrain = bag.fit_transform(documents)
         log.write(f'feature tokens:{os.linesep}')
         log.write(os.linesep.join(bag.get_feature_names()))
+        writeDirectory = os.path.dirname(os.path.realpath(log.name))
+        targets = np.array(targets)
+        familiedFeatures = {}
+        for family in np.unique(targets):
+            familied = xTrain[targets==family].sum(axis=0)
+            familiedFeatures[family] = zip(bag.get_feature_names(),
+                                           np.asarray(familied).ravel())
+        joblib.dump(familiedFeatures,
+                    os.path.join(writeDirectory,'tokenFrequency.joblib'))
         args = bag.get_params()
         argsInOrder = sorted([(k,args[k]) for k in args],key=lambda k:k[0])
         log.write(f'{os.linesep*2} count vectorizer parameters: {os.linesep}'
