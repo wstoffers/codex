@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'predictionScreen.dart';
 
@@ -12,7 +14,37 @@ class InputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.grey[900],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40.0),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          actions: [
+            Builder(
+              builder: (context) => IconButton(
+                icon: Icon(Icons.local_bar_rounded),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              child: Center(
+                child: Text(
+                  'Welcome!',
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+              ),
+            ),
+            SignInForm(),
+          ],
+        ),
+      ),
       body: Center(
         child: SizedBox(
           width: 400,
@@ -22,6 +54,141 @@ class InputScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class SignInForm extends StatefulWidget {
+  @override
+  _SignInFormState createState() => _SignInFormState();
+}
+
+class _SignInFormState extends State<SignInForm> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _success;
+  String _userEmail;
+  User _firebaseUser;
+  double _formProgress = 0;
+
+  void _updateFormProgress() {
+    var progress = 0.0;
+    final controllers = [
+      _emailController,
+      _passwordController,
+    ];
+    for (final controller in controllers) {
+      if (controller.value.text.isNotEmpty) {
+        progress += 1 / controllers.length;
+      }
+    }
+    setState(() {
+      _formProgress = progress;
+    });
+  }
+
+  void _signInWithEmailAndPassword() async {
+    final User user = (await _auth.signInWithEmailAndPassword(
+      email: _emailController.text,
+      password: _passwordController.text,
+    ))
+        .user;
+
+    if (user != null) {
+      setState(() {
+        _success = true;
+        _userEmail = user.email;
+        _firebaseUser = user;
+      });
+    } else {
+      setState(() {
+        _success = false;
+      });
+    }
+  }
+
+  
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _firebaseUser == null
+        ? Form(
+            key: _formKey,
+            onChanged: _updateFormProgress,
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter email',
+                    ),
+                    cursorColor: Theme.of(context).accentColor,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: TextFormField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter password',
+                    ),
+                    cursorColor: Theme.of(context).accentColor,
+                    obscureText: true,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextButton(
+                    onPressed: _formProgress == 1
+                        ? () async {
+                            _signInWithEmailAndPassword();
+                            Navigator.of(context).pop();
+                          }
+                        : null,
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          EdgeInsets.all(10)),
+                      foregroundColor: MaterialStateProperty.resolveWith(
+                          (Set<MaterialState> states) {
+                        return states.contains(MaterialState.disabled)
+                            ? null
+                            : Colors.black;
+                      }),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                          (Set<MaterialState> states) {
+                        return states.contains(MaterialState.disabled)
+                            ? null
+                            : Theme.of(context).accentColor;
+                      }),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : TextButton(
+            onPressed: () {
+              log('will sign out');
+            },
+            child: Text(
+              'Sign Out',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          );
   }
 }
 

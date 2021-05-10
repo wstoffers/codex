@@ -1,5 +1,5 @@
-name: flutter_frontend
-description: Flutter interface for Codex
+name: palates
+description: Palates framework for Codex
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -25,6 +25,12 @@ dependencies:
     sdk: flutter
   http: ^0.13.1
   animated_text_kit: ^4.2.0
+  firebase_core: ^1.1.1
+  firebase_auth: ^1.1.4
+  cloud_firestore: ^2.1.0
+  firebase_dynamic_links: ^2.0.3
+  firebase_analytics: ^8.0.4
+  provider: ^5.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
